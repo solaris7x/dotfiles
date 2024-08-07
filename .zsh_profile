@@ -1,0 +1,45 @@
+alias ls='ls --color'
+
+glitchgit() {
+    GIT_COMMITTER_DATE="$(date --date="$1")" git commit --amend --no-edit --date "$(date --date="$1")"
+}
+
+curlFileDrive() {
+    # Config
+    local rcloneRemote="adpatil:CurlChatUploads/"
+    local chatWebhook='https://chat.googleapis.com/v1/spaces/AAAAqWooSPA/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=a-DS4_tvOjZr0PuB4m3zeaI0i0ac620yO9e-gYnbvsc'
+    # Check if $1 has a leading '/' before any alphanumeric character
+    if [[ ! "$1" =~ ^/[^/]*[a-zA-Z0-9] ]]; then
+        # Prepend '/' to $1
+        local filepath="./$1"
+    else
+        local filepath="$1"
+    fi
+    local filename="${1##*/}"
+    local base_filename="${filename%.*}"
+    local ext="${filename##*.}"
+
+    local counter=1
+    local unique_filename="$filename"
+
+    local remote_files
+    remote_files=$(rclone lsf "$rcloneRemote" | awk '{print $NF}')
+
+    while echo "$remote_files" | grep -q "^$unique_filename$"; do
+        unique_filename="${base_filename}-${counter}.${ext}"
+        ((counter++))
+    done
+
+    echo "$unique_filename"
+    echo "rclone copyto -P '$filepath' '$rcloneRemote$unique_filename'"
+    rclone copyto -P "$filepath" "$rcloneRemote$unique_filename" \
+    && shareLink=$(rclone link "$rcloneRemote$unique_filename") \
+    && curl -X POST \
+         -H "Content-Type: application/json" \
+         -d "{
+             'text': 'Sender: $(hostname)
+Filename: $(echo ${1##*/})
+Here is the link to the uploaded file: $shareLink'
+         }" \
+         "$chatWebhook"
+}
