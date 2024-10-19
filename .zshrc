@@ -23,7 +23,7 @@ setopt appendhistory
 setopt sharehistory
 
 # Vscode config
-[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
+# [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
 
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
@@ -70,7 +70,20 @@ if [ -f ~/.zsh_profile ]; then
     . ~/.zsh_profile
 fi
 
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-export PATH="/home/linuxbrew/.linuxbrew/opt/node@18/bin:$PATH"
-export LDFLAGS="-L/home/linuxbrew/.linuxbrew/opt/node@18/lib"
-export CPPFLAGS="-I/home/linuxbrew/.linuxbrew/opt/node@18/include"
+if [ -f /home/linuxbrew ]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    export PATH="/home/linuxbrew/.linuxbrew/opt/node@18/bin:$PATH"
+    export LDFLAGS="-L/home/linuxbrew/.linuxbrew/opt/node@18/lib"
+    export CPPFLAGS="-I/home/linuxbrew/.linuxbrew/opt/node@18/include"
+fi
+
+# RKE2
+PATH="$PATH:/var/lib/rancher/rke2/bin/"
+
+# If kubectl is installed
+if [ -x "$(command -v kubectl)" ]; then
+    source <(kubectl completion zsh)
+    # Make "kubecolor" borrow the same completion logic as "kubectl"
+    compdef kubecolor=kubectl
+    alias k=kubecolor
+fi
