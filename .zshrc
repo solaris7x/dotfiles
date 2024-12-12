@@ -8,9 +8,24 @@ if [[ ! "$PATH" == *"$HOME/.local/bin"* ]]; then
     export PATH=$HOME/.local/bin:$PATH
 fi
 
+# Add in oh-my-posh
 # Install oh-my-posh in $HOME/.local/bin if not already installed
-# if [ ! -d $HOME/.local/bin/oh-my-posh ]; then
-#     curl -s https://ohmyposh.dev/install.sh | bash -s -- -d ~/.local/bin
+if [ ! -x "$(command -v oh-my-posh)" ]; then
+    curl -s https://ohmyposh.dev/install.sh | bash -s -- -d ~/.local/bin
+fi
+# eval "$(oh-my-posh init zsh)"
+eval "$(oh-my-posh init zsh --config ~/.config/ohmyposh/not_so_bad.omp.json)"
+
+# Shell integrations
+# Install fzf if not installed
+if [[ ! -f $HOME/.fzf.zsh && ! -x "$(command -v fzf)" ]]; then
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+    ~/.fzf/install
+fi
+
+# fzf for command history
+source ~/.fzf.zsh
+eval "$(fzf --zsh)"
 
 # Silent rm
 setopt rmstarsilent
@@ -49,6 +64,9 @@ autoload -Uz compinit && compinit
 
 zinit light zsh-users/zsh-autosuggestions
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#242b36,bg=bold,underline"
+# Partial accept
+bindkey '^[[1;5C' forward-word
+bindkey '^[[1;5D' backward-kill-word
 
 # fzf like auto completion
 zstyle ':completion:*' menu no
@@ -62,23 +80,21 @@ zinit cdreplay -q
 eval "$(oh-my-posh init zsh --config ~/.config/ohmyposh/not_so_bad.omp.json)"
 
 # Shell integrations
-# fzf for command history
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-eval "$(fzf --zsh)"
-
-if [ -f ~/.zsh_profile ]; then
-    . ~/.zsh_profile
+if [ -d /home/linuxbrew ]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
-if [ -f /home/linuxbrew ]; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-    export PATH="/home/linuxbrew/.linuxbrew/opt/node@18/bin:$PATH"
-    export LDFLAGS="-L/home/linuxbrew/.linuxbrew/opt/node@18/lib"
-    export CPPFLAGS="-I/home/linuxbrew/.linuxbrew/opt/node@18/include"
+# Nodejs brew
+if [ -d '/home/linuxbrew/.linuxbrew/opt/node@20' ]; then
+    export PATH="/home/linuxbrew/.linuxbrew/opt/node@20/bin:$PATH"
+    export LDFLAGS="-L/home/linuxbrew/.linuxbrew/opt/node@20/lib"
+    export CPPFLAGS="-I/home/linuxbrew/.linuxbrew/opt/node@20/include"
 fi
 
 # RKE2
-PATH="$PATH:/var/lib/rancher/rke2/bin/"
+if [ -d /var/lib/rancher/rke2/bin ]; then
+    export PATH="$PATH:/var/lib/rancher/rke2/bin"
+fi
 
 # If kubectl is installed
 if [ -x "$(command -v kubectl)" ]; then

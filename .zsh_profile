@@ -43,3 +43,9 @@ Here is the link to the uploaded file: $shareLink'
          }" \
          "$chatWebhook"
 }
+
+driveGetFile() {
+    local rcloneRemote="adpatil:CurlChatUploads/"
+    echo "rclone copyto -P '$filepath' '$rcloneRemote$unique_filename'"
+    rclone copyto -P "$rcloneRemote$1" "./$1"
+}
