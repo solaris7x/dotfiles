@@ -63,7 +63,7 @@ zinit light zsh-users/zsh-completions
 autoload -Uz compinit && compinit
 
 zinit light zsh-users/zsh-autosuggestions
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#242b36,bg=bold,underline"
+# ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#242b36,bg=bold,underline"
 # Partial accept
 bindkey '^[[1;5C' forward-word
 bindkey '^[[1;5D' backward-kill-word
@@ -82,14 +82,14 @@ eval "$(oh-my-posh init zsh --config ~/.config/ohmyposh/not_so_bad.omp.json)"
 # Shell integrations
 if [ -d /home/linuxbrew ]; then
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    # Nodejs brew
+    if [ -d '/home/linuxbrew/.linuxbrew/opt/node@20' ]; then
+        export PATH="/home/linuxbrew/.linuxbrew/opt/node@20/bin:$PATH"
+        export LDFLAGS="-L/home/linuxbrew/.linuxbrew/opt/node@20/lib"
+        export CPPFLAGS="-I/home/linuxbrew/.linuxbrew/opt/node@20/include"
+    fi
 fi
 
-# Nodejs brew
-if [ -d '/home/linuxbrew/.linuxbrew/opt/node@20' ]; then
-    export PATH="/home/linuxbrew/.linuxbrew/opt/node@20/bin:$PATH"
-    export LDFLAGS="-L/home/linuxbrew/.linuxbrew/opt/node@20/lib"
-    export CPPFLAGS="-I/home/linuxbrew/.linuxbrew/opt/node@20/include"
-fi
 
 # RKE2
 if [ -d /var/lib/rancher/rke2/bin ]; then
