@@ -78,3 +78,10 @@ aria2t() {
     "$@" 
 }
 
+tm() {
+  local dir_name="${PWD##*/}"
+  # Clean up dots or invalid characters if necessary
+  local session_name="${dir_name//./_}" 
+  
+  tmux attach -t "$session_name" 2>/dev/null || tmux new -s "$session_name"
+}

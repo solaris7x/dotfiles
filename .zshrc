@@ -1,5 +1,10 @@
 # Created by newuser for 5.8.1
 
+# Load .zsh_alias if it exists
+if [ -f ~/.zsh_alias ]; then
+    source ~/.zsh_alias
+fi
+
 # Create $HOME/.local/bin foler if doesnt exist
 [ -d $HOME/.local/bin ] || mkdir $HOME/.local/bin
 
@@ -59,6 +64,10 @@ zinit light zsh-users/zsh-syntax-highlighting
 
 # Add in zsh completions
 zinit light zsh-users/zsh-completions
+
+# Add aoe completions
+command -v aoe >/dev/null 2>&1 && eval "$(aoe completion zsh)"
+
 # Load completions
 autoload -Uz compinit && compinit
 
@@ -103,3 +112,43 @@ if [ -x "$(command -v kubectl)" ]; then
     compdef kubecolor=kubectl
     alias k=kubecolor
 fi
+
+# bun completions
+[ -s "/home/ubuntu/.bun/_bun" ] && source "/home/ubuntu/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+[ -f ~/.free-coding-models.env ] && . ~/.free-coding-models.env  # free-coding-models-env
+
+# Added by Antigravity CLI installer
+export PATH="/home/ubuntu/.local/bin:$PATH"
+
+# API keys
+export CONTEXT7_API_KEY=ctx7sk-730e3c2b-d033-43fe-bca5-137cb80be98b
+
+# Alias
+killport() {
+     local port=$1 pid
+     if command -v lsof >/dev/null; then
+       pid=$(lsof -ti :$port | head -n1)
+     else
+       pid=$(ss -tulpn | grep ":$port" | grep -oP 'pid=\K[0-9]+' | head -n1)
+     fi
+     if [ -z "$pid" ]; then
+       echo "No process on port $port"
+       return 1
+     fi
+     echo "Killing PID $pid on port $port"
+     kill "$pid" && echo "Killed." || echo "Failed."
+   }
+
+
+
+# opencode
+export PATH=/home/ubuntu/.opencode/bin:$PATH

@@ -1,0 +1,207 @@
+[
+  {
+    "plugin_id": "herdr.auto-title",
+    "name": "Auto Title",
+    "version": "0.4.0",
+    "min_herdr_version": "0.8.2",
+    "description": "Automatically generates contextual tab titles",
+    "manifest_path": "/home/ubuntu/dotfiles/.config/herdr/plugins/github/herdr.auto-title-4b7d61f48ce8/herdr-plugin.toml",
+    "plugin_root": "/home/ubuntu/dotfiles/.config/herdr/plugins/github/herdr.auto-title-4b7d61f48ce8",
+    "enabled": true,
+    "platforms": [
+      "linux",
+      "macos"
+    ],
+    "build": [
+      {
+        "command": [
+          "go",
+          "build",
+          "-o",
+          "herdr-auto-title",
+          "./cmd/herdr-auto-title"
+        ]
+      }
+    ],
+    "startup": [
+      {
+        "command": [
+          "./herdr-auto-title"
+        ]
+      }
+    ],
+    "source": {
+      "kind": "github",
+      "owner": "kryptamine",
+      "repo": "herdr-auto-title",
+      "resolved_commit": "a34f22d1fc8a6037d171789cfda17289088527e0",
+      "managed_path": "/home/ubuntu/.config/herdr/plugins/github/herdr.auto-title-4b7d61f48ce8",
+      "installed_unix_ms": 1788781472283
+    }
+  },
+  {
+    "plugin_id": "herdr.collie",
+    "name": "Collie",
+    "version": "1.5.5",
+    "min_herdr_version": "0.7.0",
+    "description": "Mobile web UI to monitor and reply to your agent herd, served over Tailscale",
+    "manifest_path": "/home/ubuntu/.local/share/collie/versions/1.5.5/herdr-plugin.toml",
+    "plugin_root": "/home/ubuntu/.local/share/collie/versions/1.5.5",
+    "enabled": true,
+    "platforms": [
+      "linux",
+      "macos"
+    ],
+    "build": [
+      {
+        "platforms": [
+          "linux",
+          "macos"
+        ],
+        "command": [
+          "bash",
+          "scripts/collie-ctl.sh",
+          "build"
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "id": "push-keys",
+        "title": "Generate push keys",
+        "contexts": [
+          "workspace"
+        ],
+        "command": [
+          "bash",
+          "scripts/collie-ctl.sh",
+          "push-keys"
+        ]
+      },
+      {
+        "id": "push-test",
+        "title": "Send a test notification",
+        "contexts": [
+          "workspace"
+        ],
+        "command": [
+          "bash",
+          "scripts/collie-ctl.sh",
+          "push-test"
+        ]
+      },
+      {
+        "id": "restart",
+        "title": "Restart Collie",
+        "contexts": [
+          "workspace"
+        ],
+        "command": [
+          "bash",
+          "scripts/collie-ctl.sh",
+          "restart"
+        ]
+      },
+      {
+        "id": "start",
+        "title": "Start Collie",
+        "contexts": [
+          "workspace"
+        ],
+        "command": [
+          "bash",
+          "scripts/collie-ctl.sh",
+          "start"
+        ]
+      },
+      {
+        "id": "status",
+        "title": "Collie status",
+        "contexts": [
+          "workspace"
+        ],
+        "command": [
+          "bash",
+          "scripts/collie-ctl.sh",
+          "status"
+        ]
+      },
+      {
+        "id": "stop",
+        "title": "Stop Collie",
+        "contexts": [
+          "workspace"
+        ],
+        "command": [
+          "bash",
+          "scripts/collie-ctl.sh",
+          "stop"
+        ]
+      },
+      {
+        "id": "uninstall",
+        "title": "Uninstall Collie (remove service)",
+        "contexts": [
+          "workspace"
+        ],
+        "command": [
+          "bash",
+          "scripts/collie-ctl.sh",
+          "uninstall"
+        ]
+      },
+      {
+        "id": "update",
+        "title": "Update plugin",
+        "contexts": [
+          "workspace"
+        ],
+        "command": [
+          "bash",
+          "scripts/collie-ctl.sh",
+          "update"
+        ]
+      },
+      {
+        "id": "update-major",
+        "title": "Update across a major version",
+        "contexts": [
+          "workspace"
+        ],
+        "command": [
+          "bash",
+          "scripts/collie-ctl.sh",
+          "update",
+          "--major"
+        ]
+      },
+      {
+        "id": "url",
+        "title": "Show Collie URL",
+        "contexts": [
+          "workspace"
+        ],
+        "command": [
+          "bash",
+          "scripts/collie-ctl.sh",
+          "url"
+        ]
+      },
+      {
+        "id": "version",
+        "title": "Show version",
+        "contexts": [
+          "workspace"
+        ],
+        "command": [
+          "bash",
+          "scripts/collie-ctl.sh",
+          "version"
+        ]
+      }
+    ],
+    "source": {
+      "kind": "local"
+    }
+  }
+]
