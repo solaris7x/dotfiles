@@ -1,5 +1,6 @@
 alias ls='ls --color'
 alias rsync='rsync --info=progress2'
+alias hec='herdr workspace create --cwd $(pwd)'
 
 glitchgit() {
     GIT_COMMITTER_DATE="$(date --date="$1")" git commit --amend --no-edit --date "$(date --date="$1")"
@@ -85,3 +86,19 @@ tm() {
   
   tmux attach -t "$session_name" 2>/dev/null || tmux new -s "$session_name"
 }
+
+
+# Opencode sync 
+# Add shared tools to PATH
+export PATH="/mnt/vol1/bin:$PATH"
+
+# Seamless OpenCode Bidirectional Sync Wrapper
+opencode() {
+  /mnt/vol1/bin/opencode-sync pull --quiet 2>/dev/null || true
+  command opencode "$@"
+  local ret=$?
+  /mnt/vol1/bin/opencode-sync push --quiet 2>/dev/null || true
+  return $ret
+}
+
+
