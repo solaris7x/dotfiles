@@ -132,23 +132,36 @@ export PATH="/home/ubuntu/.local/bin:$PATH"
 # API keys
 export CONTEXT7_API_KEY=ctx7sk-730e3c2b-d033-43fe-bca5-137cb80be98b
 
-# Alias
+# Kill process holding port
 killport() {
-     local port=$1 pid
-     if command -v lsof >/dev/null; then
-       pid=$(lsof -ti :$port | head -n1)
-     else
-       pid=$(ss -tulpn | grep ":$port" | grep -oP 'pid=\K[0-9]+' | head -n1)
-     fi
-     if [ -z "$pid" ]; then
-       echo "No process on port $port"
-       return 1
-     fi
-     echo "Killing PID $pid on port $port"
-     kill "$pid" && echo "Killed." || echo "Failed."
-   }
+  local port="${1%/*}"
+  if [ -z "$port" ]; then
+    echo "Usage: killport <port>"
+    return 1
+  fi
+  if command -v fuser >/dev/null 2>&1; then
+    if ! fuser "$port/tcp" >/dev/null 2>&1; then
+      echo "No process found on port $port"
+      return 0
+    fi
+    echo "Killing process holding port $port:"
+    fuser -v "$port/tcp" 2>&1
+    fuser -k -9 "$port/tcp" >/dev/null 2>&1
+    sleep 0.2
+    if fuser "$port/tcp" >/dev/null 2>&1; then
+      echo "Warning: Port $port still in use (try: sudo fuser -k -9 $port/tcp)"
+    else
+      echo "Port $port successfully freed."
+    fi
+  else
+    local pid=$(ss -tulpn 2>/dev/null | grep ":$port" | grep -oP 'pid=\K[0-9]+' | head -n1)
+    if [ -n "$pid" ]; then
+      kill -9 "$pid" && echo "Killed PID $pid on port $port." || echo "Failed to kill PID $pid."
+    else
+      echo "No process on port $port"
+    fi
+  fi
+}
 
 
 
-# opencode
-export PATH=/home/ubuntu/.opencode/bin:$PATH

@@ -89,11 +89,17 @@ tm() {
 
 
 # Opencode sync 
-# Add shared tools to PATH
-export PATH="/mnt/vol1/bin:$PATH"
+# opencode & shared tools
+export PATH="/mnt/vol1/bin:/home/ubuntu/.opencode/bin:$PATH"
 
-# Seamless OpenCode Bidirectional Sync Wrapper
-opencode() {
+# Smart OpenCode wrapper: auto-detects mobile proxy & syncs chats across machines
+oc() {
+  if ss -tl 2>/dev/null | grep -q ":10800 "; then
+    export https_proxy="http://[::1]:10800" http_proxy="http://[::1]:10800"
+    export no_proxy="localhost,127.0.0.1,::1" NO_PROXY="localhost,127.0.0.1,::1"
+  else
+    unset https_proxy http_proxy no_proxy NO_PROXY
+  fi
   /mnt/vol1/bin/opencode-sync pull --quiet 2>/dev/null || true
   command opencode "$@"
   local ret=$?
